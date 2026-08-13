@@ -1,0 +1,27 @@
+(define (controlla f png)
+  (let* ((img (car (gimp-file-load RUN-NONINTERACTIVE f f)))
+         (info (gimp-image-get-layers img))
+         (n (car info)) (ids (cadr info)))
+    (gimp-message (string-append "== " f))
+    (let loop ((i 0))
+      (if (< i n)
+        (let* ((lid (vector-ref ids i))
+               (nome (car (gimp-item-get-name lid)))
+               (testo? (= (car (gimp-item-is-text-layer lid)) 1)))
+          (gimp-message (string-append "   " nome
+            (if testo?
+                (string-append "  [TESTO MODIFICABILE]  font: "
+                  (car (gimp-text-layer-get-font lid))
+                  "  corpo: " (number->string (car (gimp-text-layer-get-font-size lid))))
+                "  [raster]")))
+          (loop (+ i 1)))))
+    (let ((copia (car (gimp-image-duplicate img))))
+      (gimp-image-flatten copia)
+      (file-png-save RUN-NONINTERACTIVE copia (car (gimp-image-get-active-drawable copia))
+                     png png 0 9 1 1 1 1 1)
+      (gimp-image-delete copia))
+    (gimp-image-delete img)))
+
+(controlla "carola-biglietto-fronte.xcf" "verifica-fronte.png")
+(controlla "carola-biglietto-retro.xcf" "verifica-retro.png")
+(gimp-quit 0)
