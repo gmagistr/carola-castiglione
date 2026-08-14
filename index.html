@@ -413,7 +413,43 @@
     html { scroll-behavior: auto; }
     * { transition-duration: 0.01ms !important; animation: none !important; }
   }
+
+  /* --- scelta fra i tre menu --- */
+  .scelta-menu { display: flex; flex-wrap: wrap; gap: 0.6rem; margin: 0 0 1.8rem; }
+  .scelta {
+    font-family: var(--testo);
+    font-weight: 700;
+    font-size: 0.76rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--osso-2);
+    background: transparent;
+    border: 1px solid var(--linea);
+    border-radius: 999px;
+    padding: 0.62rem 1.35rem;
+    cursor: pointer;
+    transition: color 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+  }
+  .scelta.pesce:hover:not([aria-selected="true"])  { color: var(--turchese); border-color: var(--turchese); }
+  .scelta.carne:hover:not([aria-selected="true"])  { color: var(--giallo-c); border-color: var(--giallo-c); }
+  .scelta.vegano:hover:not([aria-selected="true"]) { color: var(--verde-c);  border-color: var(--verde-c); }
+  .scelta[aria-selected="true"] { color: var(--verde); border-color: transparent; }
+  .scelta.pesce[aria-selected="true"]  { background: var(--turchese); }
+  .scelta.carne[aria-selected="true"]  { background: var(--giallo-c); }
+  .scelta.vegano[aria-selected="true"] { background: var(--verde-c); }
+  .scelta:focus-visible { outline: 2px solid var(--ambra); outline-offset: 3px; }
+  .menu-piatti.inattivo { display: none; }
+  /* sui dispositivi tattili area di tocco piena, e le tre schede su una riga sola */
+  @media (pointer: coarse) { .scelta { min-height: 44px; } }
+  @media (max-width: 480px) {
+    .scelta { padding-left: 1rem; padding-right: 1rem; font-size: 0.72rem; letter-spacing: 0.09em; }
+    .scelta-menu { gap: 0.45rem; }
+  }
+  /* senza JavaScript restano visibili tutti e tre i menu */
+  html:not(.js) .menu-piatti.inattivo { display: block; }
+  html:not(.js) .scelta-menu { display: none; }
 </style>
+<script>document.documentElement.className += " js";</script>
 
 <div class="shell">
   <header class="top">
@@ -506,23 +542,58 @@
       </div>
       <div class="menù-carta">
         <h2>Lasciatevi ispirare: alcuni miei piatti</h2>
-        <p class="nota">Scritto per una sera d'estate romana. Il vostro nascerà dal mercato del giorno.</p>
+        <p class="nota">Tre proposte per una sera d'estate romana. Il vostro nascerà dal mercato del giorno.</p>
+
+        <div class="scelta-menu" role="tablist" aria-label="Scegliete il tipo di menù">
+          <button type="button" class="scelta pesce" role="tab" id="tab-pesce" aria-controls="menu-pesce" aria-selected="true">Pesce</button>
+          <button type="button" class="scelta carne" role="tab" id="tab-carne" aria-controls="menu-carne" aria-selected="false" tabindex="-1">Carne</button>
+          <button type="button" class="scelta vegano" role="tab" id="tab-vegano" aria-controls="menu-vegano" aria-selected="false" tabindex="-1">Vegano</button>
+        </div>
+
+        <div class="menu-piatti" id="menu-pesce" role="tabpanel" aria-labelledby="tab-pesce">
         <div class="portata">
           <h4>Fiore di zucca al vapore, ricotta romana e colatura di alici</h4>
           <p>datterino giallo, pane di Lariano tostato</p>
         </div>
         <div class="portata">
-          <h4>Raviolo di coda alla vaccinara, sedano croccante e cacao amaro</h4>
-          <p>pecorino romano, fondo ristretto</p>
+          <h4>Raviolo di ricotta di pecora e nero di seppia</h4>
         </div>
         <div class="portata">
-          <h4>Rombo al burro nocciola, cicoria ripassata e limone salato</h4>
-          <p>beurre blanc al Frascati superiore</p>
+          <h4>Rombo alle erbe mediterranee e verdure di stagione</h4>
         </div>
         <div class="portata">
-          <h4>Visciole, ricotta di pecora e mandorla</h4>
-          <p>come una crostata, servita fredda</p>
+          <h4>Composta di fichi, ricotta e mandorle</h4>
         </div>
+        </div>
+        <div class="menu-piatti inattivo" id="menu-carne" role="tabpanel" aria-labelledby="tab-carne">
+        <div class="portata">
+          <h4>Culatello di Bassiano, burrata e fichi</h4>
+        </div>
+        <div class="portata">
+          <h4>Risotto cacio e pepe e carciofi croccanti</h4>
+        </div>
+        <div class="portata">
+          <h4>Carré d'agnello con purè di carote arrosto</h4>
+        </div>
+        <div class="portata">
+          <h4>Bignè al tiramisù</h4>
+        </div>
+        </div>
+        <div class="menu-piatti inattivo" id="menu-vegano" role="tabpanel" aria-labelledby="tab-vegano">
+        <div class="portata">
+          <h4>Polpettine di melanzane su hummus tricolore</h4>
+        </div>
+        <div class="portata">
+          <h4>Pici, zucchine romanesche e zafferano</h4>
+        </div>
+        <div class="portata">
+          <h4>Cotoletta di cavolfiore con insalata di cavolo cappuccio e fagioli cannellini</h4>
+        </div>
+        <div class="portata">
+          <h4>Torta caprese con panna</h4>
+        </div>
+        </div>
+
         <p class="congedo">Ogni menù è scritto una volta sola.</p>
       </div>
     </div>
@@ -632,3 +703,30 @@
     <span>Roma, P. IVA 00000000000</span>
   </footer>
 </div>
+
+<script>
+  (function () {
+    var schede = Array.prototype.slice.call(document.querySelectorAll('.scelta'));
+    if (!schede.length) return;
+    function attiva(i) {
+      schede.forEach(function (s, j) {
+        var scelta = i === j;
+        s.setAttribute('aria-selected', scelta ? 'true' : 'false');
+        s.tabIndex = scelta ? 0 : -1;
+        document.getElementById(s.getAttribute('aria-controls'))
+                .classList.toggle('inattivo', !scelta);
+      });
+    }
+    schede.forEach(function (s, i) {
+      s.addEventListener('click', function () { attiva(i); });
+      s.addEventListener('keydown', function (e) {
+        var n = null;
+        if (e.key === 'ArrowRight') n = (i + 1) % schede.length;
+        if (e.key === 'ArrowLeft')  n = (i - 1 + schede.length) % schede.length;
+        if (e.key === 'Home') n = 0;
+        if (e.key === 'End')  n = schede.length - 1;
+        if (n !== null) { e.preventDefault(); attiva(n); schede[n].focus(); }
+      });
+    });
+  })();
+</script>
