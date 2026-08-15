@@ -602,21 +602,21 @@
   <section id="stagioni" class="stagioni">
     <div class="stagioni-griglia">
       <div>
-        <h2>Adesso al mercato: luglio.</h2>
+        <h2>Adesso al mercato: <span id="mese-corrente">agosto</span>.</h2>
         <p class="coda">La cesta cambia ogni poche settimane, e con lei i menù. Non troverete un listino di piatti fissi: la stagione scrive, io traduco.</p>
-        <div class="cesta">
-          <span class="frutto rosso">pomodori da riccio</span>
-          <span class="frutto giallo">fiori di zucca</span>
-          <span class="frutto rosso">visciole</span>
-          <span class="frutto verde">basilico a mazzi</span>
-          <span class="frutto giallo">albicocche vesuviane</span>
-          <span class="frutto verde">zucchine romanesche</span>
-          <span class="frutto">alici di paranza</span>
-          <span class="frutto giallo">percoche</span>
-          <span class="frutto verde">mentuccia</span>
-          <span class="frutto viola">melanzane lunghe</span>
-          <span class="frutto">ricotta di pecora</span>
-          <span class="frutto viola">primi fichi</span>
+        <div class="cesta" id="cesta">
+          <span class="frutto rosso">pomodori da salsa</span>
+          <span class="frutto viola">melanzane</span>
+          <span class="frutto giallo">peperoni</span>
+          <span class="frutto viola">fichi</span>
+          <span class="frutto viola">more</span>
+          <span class="frutto viola">uva fragola</span>
+          <span class="frutto giallo">meloni</span>
+          <span class="frutto rosso">cocomero</span>
+          <span class="frutto verde">basilico</span>
+          <span class="frutto verde">zucchine</span>
+          <span class="frutto">alici</span>
+          <span class="frutto">mozzarella di bufala</span>
         </div>
       </div>
       <div class="stagioni-foto">
@@ -727,6 +727,27 @@
         if (e.key === 'End')  n = schede.length - 1;
         if (n !== null) { e.preventDefault(); attiva(n); schede[n].focus(); }
       });
+    });
+  })();
+</script>
+
+<script>
+  /* La cesta del mercato segue il mese in corso: ogni voce compare quando e' di stagione. */
+  (function () {
+    var mesi = ["gennaio", "febbraio", "marzo", "aprile", "maggio", "giugno", "luglio", "agosto", "settembre", "ottobre", "novembre", "dicembre"];
+    var cesta = [[["carciofi romaneschi", "verde"], ["puntarelle", "verde"], ["broccoli romaneschi", "verde"], ["cavolo nero", "verde"], ["finocchi", ""], ["cardi", ""], ["arance tarocco", "rosso"], ["mandarini", "giallo"], ["radicchio", "viola"], ["spinaci", "verde"], ["alici", ""], ["ricotta di pecora", ""]], [["carciofi romaneschi", "verde"], ["puntarelle", "verde"], ["broccoletti", "verde"], ["cavolfiore", ""], ["finocchi", ""], ["porri", "verde"], ["arance", "rosso"], ["cedri", "giallo"], ["radicchio", "viola"], ["bietole", "verde"], ["seppie", ""]], [["carciofi", "verde"], ["agretti", "verde"], ["asparagi selvatici", "verde"], ["fave fresche", "verde"], ["piselli", "verde"], ["cicoria", "verde"], ["arance", "rosso"], ["kiwi", ""], ["bietole", "verde"], ["alici", ""], ["ricotta di pecora", ""]], [["fave fresche", "verde"], ["piselli", "verde"], ["asparagi", "verde"], ["carciofi", "verde"], ["agretti", "verde"], ["fragole", "rosso"], ["ravanelli", "rosso"], ["cipollotti", ""], ["lattughe", "verde"], ["seppie", ""], ["ricotta di pecora", ""]], [["fave", "verde"], ["piselli", "verde"], ["fagiolini", "verde"], ["zucchine con i fiori", "giallo"], ["fragole", "rosso"], ["ciliegie", "rosso"], ["asparagi", "verde"], ["cetrioli", "verde"], ["lattughe", "verde"], ["alici", ""], ["primo pecorino", ""]], [["pomodori", "rosso"], ["zucchine romanesche", "verde"], ["melanzane", "viola"], ["peperoni", "giallo"], ["fagiolini", "verde"], ["albicocche", "giallo"], ["ciliegie", "rosso"], ["pesche", "rosso"], ["basilico", "verde"], ["alici di paranza", ""], ["mozzarella di bufala", ""]], [["pomodori da riccio", "rosso"], ["fiori di zucca", "giallo"], ["visciole", "rosso"], ["basilico a mazzi", "verde"], ["albicocche vesuviane", "giallo"], ["zucchine romanesche", "verde"], ["alici di paranza", ""], ["percoche", "giallo"], ["mentuccia", "verde"], ["melanzane lunghe", "viola"], ["ricotta di pecora", ""], ["primi fichi", "viola"]], [["pomodori da salsa", "rosso"], ["melanzane", "viola"], ["peperoni", "giallo"], ["fichi", "viola"], ["more", "viola"], ["uva fragola", "viola"], ["meloni", "giallo"], ["cocomero", "rosso"], ["basilico", "verde"], ["zucchine", "verde"], ["alici", ""], ["mozzarella di bufala", ""]], [["uva", "viola"], ["fichi", "viola"], ["prugne", "viola"], ["funghi porcini", ""], ["zucca", "giallo"], ["melanzane", "viola"], ["peperoni", "rosso"], ["pomodori tardivi", "rosso"], ["broccoletti", "verde"], ["sgombro", ""], ["pecorino", ""]], [["funghi porcini", ""], ["castagne", ""], ["zucca", "giallo"], ["cavolo nero", "verde"], ["broccoli romaneschi", "verde"], ["uva", "viola"], ["melagrane", "rosso"], ["mele", "rosso"], ["cicoria", "verde"], ["porri", "verde"], ["alici", ""]], [["carciofi romaneschi", "verde"], ["broccoli romaneschi", "verde"], ["cavolo nero", "verde"], ["zucca", "giallo"], ["castagne", ""], ["melagrane", "rosso"], ["mele cotogne", "giallo"], ["cardi", ""], ["finocchi", ""], ["olio nuovo", "verde"], ["arance", "rosso"]], [["carciofi", "verde"], ["puntarelle", "verde"], ["broccoli romaneschi", "verde"], ["cavolo nero", "verde"], ["finocchi", ""], ["cardi", ""], ["arance", "rosso"], ["mandarini", "giallo"], ["radicchio", "viola"], ["spinaci", "verde"], ["baccalà", ""]]];
+    var contenitore = document.getElementById('cesta');
+    var etichetta = document.getElementById('mese-corrente');
+    if (!contenitore || !etichetta) return;
+    var m = new Date().getMonth();
+    if (!cesta[m]) return;
+    etichetta.textContent = mesi[m];
+    contenitore.textContent = '';
+    cesta[m].forEach(function (voce) {
+      var s = document.createElement('span');
+      s.className = 'frutto' + (voce[1] ? ' ' + voce[1] : '');
+      s.textContent = voce[0];
+      contenitore.appendChild(s);
     });
   })();
 </script>
